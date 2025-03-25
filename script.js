@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const mediumUsername = "amit.rajawat12"; // Your Medium username
-    const rssFeed = `https://medium.com/feed/@${mediumUsername}`;
+    const rssFeed = `https://medium.com/feed/@${amit.rajawat12}`;
     const apiURL = `https://api.rss2json.com/v1/api.json?rss_url=${rssFeed}`;
 
     const articlesContainer = document.getElementById("articles");
