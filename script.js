@@ -11,12 +11,12 @@ fetch(feedURL)
       article.innerHTML = `
         <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
         <p>${item.pubDate.split(' ')[0]} — ${item.author}</p>
-        <p>${item.description.substring(0, 200)}...</p>
+        <p>${item.description.replace(/<[^>]*>/g, '').substring(0, 200)}...</p>
       `;
       container.appendChild(article);
     });
   })
   .catch(error => {
     console.error("Error fetching Medium feed:", error);
-    document.getElementById("articles").innerHTML = "<p>Failed to load articles. Please try again later.</p>";
+    document.getElementById("articles").innerHTML = "<p>Failed to load articles.</p>";
   });
