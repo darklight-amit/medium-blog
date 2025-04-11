@@ -1,32 +1,32 @@
-async function loadMediumArticles() {
+async function loadArticles() {
   const rssUrl = 'https://medium.com/feed/@amit.rajawat12';
   const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
   try {
-    const res = await fetch(apiUrl);
-    const data = await res.json();
+    const response = await fetch(apiUrl);
+    const data = await response.json();
     const container = document.getElementById('articles');
     container.innerHTML = '';
 
     data.items.forEach(item => {
       const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
-      const imgSrc = imgMatch ? imgMatch[1] : '';
+      const image = imgMatch ? `<img src="${imgMatch[1]}" alt="Article Image">` : '';
 
-      const div = document.createElement('div');
-      div.className = 'article';
-      div.innerHTML = `
+      const article = document.createElement('div');
+      article.className = 'article';
+      article.innerHTML = `
         <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-        ${imgSrc ? `<img src="${imgSrc}" alt="Article Image">` : ''}
-        <p><strong>Published:</strong> ${new Date(item.pubDate).toLocaleDateString()}</p>
+        ${image}
+        <p><strong>Published:</strong> ${new Date(item.pubDate).toDateString()}</p>
         <p>${item.description}</p>
       `;
 
-      container.appendChild(div);
+      container.appendChild(article);
     });
-  } catch (err) {
-    document.getElementById('articles').innerHTML = `<p>Failed to load articles. Please try again later.</p>`;
-    console.error('Error loading Medium articles:', err);
+  } catch (error) {
+    console.error('Failed to load articles:', error);
+    document.getElementById('articles').innerHTML = '<p>Failed to load articles.</p>';
   }
 }
 
-window.onload = loadMediumArticles;
+window.onload = loadArticles;
