@@ -1,32 +1,27 @@
-async function loadArticles() {
-  const rssUrl = 'https://medium.com/feed/@amit.rajawat12';
-  const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+const container = document.getElementById('articles-container');
 
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    const container = document.getElementById('articles');
-    container.innerHTML = '';
+fetch("https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@amit.rajawat12")
+  .then(response => response.json())
+  .then(data => {
+    data.items.forEach(article => {
+      const card = document.createElement("div");
+      card.className = "article-card";
 
-    data.items.forEach(item => {
-      const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
-      const image = imgMatch ? `<img src="${imgMatch[1]}" alt="Article Image">` : '';
+      const imageMatch = article.content.match(/<img[^>]+src="([^">]+)"/);
+      const imageUrl = imageMatch ? imageMatch[1] : "https://via.placeholder.com/300x180.png?text=No+Image";
 
-      const article = document.createElement('div');
-      article.className = 'article';
-      article.innerHTML = `
-        <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-        ${image}
-        <p><strong>Published:</strong> ${new Date(item.pubDate).toDateString()}</p>
-        <p>${item.description}</p>
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="${article.title}">
+        <div class="article-content">
+          <a href="${article.link}" target="_blank" class="article-title">${article.title}</a>
+          <p class="article-description">${article.description.slice(0, 100)}...</p>
+        </div>
       `;
 
-      container.appendChild(article);
+      container.appendChild(card);
     });
-  } catch (error) {
-    console.error('Failed to load articles:', error);
-    document.getElementById('articles').innerHTML = '<p>Failed to load articles.</p>';
-  }
-}
-
-window.onload = loadArticles;
+  })
+  .catch(error => {
+    container.innerHTML = "<p>Failed to load articles. Please try again later.</p>";
+    console.error("Error loading feed:", error);
+  });
